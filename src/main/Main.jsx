@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function Main() {
+  const [inputNum, setInputNum] = useState("");
   return (
     <main>
-      <section className="left">
-        <input type="number" className="guess" />
+      <form className="left">
+        <input
+          value={inputNum}
+          onChange={(e) => setInputNum(Number(e.target.value))}
+          type="number"
+          className="guess"
+        />
         <button className="btn check">Check!</button>
-      </section>
+      </form>
       <section className="right">
         <p className="message">Start guessing...</p>
         <p className="label-score">
