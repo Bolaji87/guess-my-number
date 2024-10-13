@@ -10,63 +10,93 @@ const initialState = {
   message: "⛔ Start guessing...",
   score: 20,
   highscore: 0,
+  background: null,
+  width: "15rem",
 };
-const reducer = () => {};
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "guessControlled":
+      return { ...state, guess: action.payload };
+    case "correctNumber":
+      return {
+        ...state,
+        message: action.payload,
+        highscore: state.score,
+        width: "30rem",
+        background: "#60b347",
+      };
+
+    case "tooHigh":
+      return { ...state, message: action.payload };
+    case "tooLow":
+      return { ...state, message: action.payload };
+    case "wrongGuess":
+      return { ...state, score: action.payload };
+    case "gameover":
+      return { ...state, message: action.payload, score: 0 };
+    case "reset":
+      return {
+        ...state,
+        score: 20,
+        message: "⛔ Start guessing...",
+        highscore: state.score,
+        guess: action.payload,
+        width: "15rem",
+        background: "#222",
+      };
+
+    default:
+      throw new Error("unknown action type");
+  }
+};
 function App() {
-  const [{ guess, message, score, highscore }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
-  // const [guess, setGuess] = useState("");
-  // const [message, setMessage] = useState("⛔ Start guessing...");
-  // const [score, setScore] = useState(20);
-  // const [highscore, setHighscore] = useState(0);
-  // const [background, setBackground] = useState("#222");
-  // const [width, setWidth] = useState("15rem");
+  const [{ guess, message, score, highscore, width, background }, dispatch] =
+    useReducer(reducer, initialState);
 
-  // const handleChangeGuess = (e) => {
-  //   setGuess(Number(e.target.value));
-  // };
+  function handleChangeGuess(e) {
+    dispatch({
+      type: "guessControlled",
+      payload: Number(e.target.value),
+    });
+  }
 
-  // function handleClick(e) {
-  //   e.preventDefault();
-  //   if (!guess) return;
-  //   if (guess === secretNumber) {
-  //     setMessage("🎉 Correct number!");
-  //     setHighscore(score);
-  //     document.querySelector("body").style = setBackground("#60b347");
-  //     setWidth("30rem");
-  //     setGuess("");
-  //   } else if (guess > secretNumber) {
-  //     if (score > 1) {
-  //       setMessage("📈 Too high!");
-  //       setScore((score) => score - 1);
-  //     } else {
-  //       setMessage("💥 You just lost the game!");
-  //       setScore(0);
-  //     }
-  //   } else if (guess < secretNumber) {
-  //     if (score < 1) {
-  //       setMessage("📉 Too low!");
-  //       setScore((score) => score - 1);
-  //     } else {
-  //       setMessage("💥 You just lost the game!");
-  //       setScore(0);
-  //     }
-  //   }
-  // }
+  function handleSubmitGuess(e) {
+    e.preventDefault();
+    if (!guess) return;
 
-  // function handleReset() {
-  //   setScore(20);
-  //   setGuess("");
-  //   setMessage("⛔ Start guessing...");
-  //   setBackground("#222");
-  // }
+    if (guess === secretNumber) {
+      dispatch({ type: "correctNumber", payload: "🎉 Correct Number!" });
+    } else if (guess > secretNumber) {
+      if (score > 1) {
+        dispatch({ type: "wrongGuess", payload: score - 1 });
+        dispatch({ type: "tooHigh", payload: "📈 Too high!" });
+      } else {
+        dispatch({ type: "gameover", payload: "💥 You just lost the game" });
+      }
+    } else if (guess < secretNumber) {
+      if (score > 1) {
+        dispatch({ type: "wrongGuess", payload: score - 1 });
+        dispatch({ type: "tooLow", payload: "📉 Too low!" });
+      } else {
+        dispatch({ type: "gameover", payload: "💥 You just lost the game" });
+      }
+    }
+  }
 
+  function handleReset(e) {
+    dispatch({ type: "reset", payload: Number(e.target.value) });
+  }
   return (
-    <div style={{}}>
-      <Header secretNumber={secretNumber} />
-      <Main />
+    <div style={{ backgroundColor: background }}>
+      <Header secretNumber={secretNumber} onReset={handleReset} width={width} />
+      <Main
+        guess={guess}
+        message={message}
+        score={score}
+        highscore={highscore}
+        onChangeGuess={handleChangeGuess}
+        onSubmitGuess={handleSubmitGuess}
+      />
     </div>
   );
 }
