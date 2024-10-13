@@ -1,25 +1,31 @@
-import React, { useState } from "react";
-
-export default function Main() {
-  const [inputNum, setInputNum] = useState("");
+export default function Main({
+  guess,
+  message,
+  score,
+  highscore,
+  onChangeGuess,
+  onSubmitGuess,
+}) {
   return (
     <main>
       <form className="left">
         <input
-          value={inputNum}
-          onChange={(e) => setInputNum(Number(e.target.value))}
+          value={guess}
+          onChange={onChangeGuess}
           type="number"
           className="guess"
         />
-        <button className="btn check">Check!</button>
+        <button className="btn check" onClick={onSubmitGuess}>
+          Check!
+        </button>
       </form>
       <section className="right">
-        <p className="message">Start guessing...</p>
+        <p className="message">{message}</p>
         <p className="label-score">
-          💯 Score: <span className="score">20</span>
+          💯 Score: <span className="score">{score}</span>
         </p>
         <p className="label-highscore">
-          🥇 Highscore: <span className="highscore">0</span>
+          🥇 Highscore: <span className="highscore">{highscore}</span>
         </p>
       </section>
     </main>
