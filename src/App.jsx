@@ -21,7 +21,8 @@ const reducer = (state, action) => {
       return {
         ...state,
         message: action.payload,
-        highscore: state.score,
+        highscore:
+          state.score > state.highscore ? state.score : state.highscore,
         width: "30rem",
         background: "#60b347",
       };
@@ -39,7 +40,7 @@ const reducer = (state, action) => {
         ...state,
         score: 20,
         message: "⛔ Start guessing...",
-        highscore: state.score,
+        highscore: state.highscore,
         guess: action.payload,
         width: "15rem",
         background: "#222",
