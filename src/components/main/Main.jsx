@@ -1,11 +1,8 @@
-export default function Main({
-  guess,
-  message,
-  score,
-  highscore,
-  onChangeGuess,
-  onSubmitGuess,
-}) {
+import { useGuess } from "../../hooks/useGuess";
+
+export default function Main() {
+  const { guess, message, score, highscore, onChangeGuess, onSubmitGuess } =
+    useGuess();
   return (
     <main>
       <form className="left">
